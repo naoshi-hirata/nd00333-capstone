@@ -1,0 +1,79 @@
+from sklearn.ensemble import RandomForestClassifier
+import argparse
+import os
+import numpy as np
+from sklearn.metrics import mean_squared_error
+from sklearn.metrics import accuracy_score
+import joblib
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import OneHotEncoder
+import pandas as pd
+from azureml.core.run import Run
+from azureml.data.dataset_factory import TabularDatasetFactory
+
+def main():
+    # Add arguments to script
+    parser = argparse.ArgumentParser()
+
+    parser.add_argument('--C', type=float, default=1.0, help="Inverse of regularization strength. Smaller values cause stronger regularization")
+    parser.add_argument('--max_iter', type=int, default=100, help="Maximum number of iterations to converge")
+
+    args = parser.parse_args()
+
+    run = Run.get_context()
+
+    run.log("Regularization Strength:", np.float(args.C))
+    run.log("Max iterations:", np.int(args.max_iter))
+
+    # Create TabularDataset using TabularDatasetFactory
+    
+    from azureml.core.dataset import Dataset
+    ds = Dataset.Tabular.from_delimited_files(path='https://archive.ics.uci.edu/ml/machine-learning-databases/car/car.data')
+    
+    # Split the data into train and test sets
+    x = ds.to_pandas_dataframe()
+    columns = ['buying', 'maint', 'doors', 'persons', 'lug_boot', 'safety', 'class']
+    x.columns = columns
+    y = x["class"]
+    x = x.drop('class', axis=1)
+    
+    x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.2, random_state=0)
+    
+    ##################################################
+    from sklearn.model_selection import RandomizedSearchCV
+    from scipy.stats import randint
+    
+    # Define the parameter ranges
+    param_dist = {
+        'n_estimators': randint(100, 1000),
+        'max_depth': [None, 5, 10, 20],
+        'min_samples_split': [2, 5, 10],
+        'min_samples_leaf': [1, 2, 4],
+        'max_features': ['sqrt', 'log2']
+    }
+    
+    # Create a RandomForestClassifier model
+    rf_model = RandomForestClassifier()
+    
+    # Perform randomized search
+    random_search = RandomizedSearchCV(rf_model, param_distributions=param_dist, n_iter=10, cv=5)
+    
+    # Train the model
+    random_search.fit(x_train, y_train)
+    
+    # Print the best hyperparameters
+    print(random_search.best_params_)
+    
+    ##################################################
+    model = RandomForestClassifier(C=args.C, max_iter=args.max_iter).fit(x_train, y_train)
+
+    accuracy = model.score(x_test, y_test)
+    run.log("accuracy", np.float(accuracy))
+    
+    # Calculate and log the AUC_weighted metric
+    predicted_probabilities = model.predict_proba(x_test)
+    auc_weighted = roc_auc_score(y_test, predicted_probabilities, average="weighted")
+    run.log("AUC_weighted", np.float(auc_weighted))
+
+    # Save the model
+    os.makedirs('outputs', exist_ok

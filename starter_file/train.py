@@ -84,7 +84,7 @@
     "    # Calculate and log the AUC_weighted metric\n",
     "    predicted_probabilities = model.predict_proba(x_test)\n",
     "    auc_weighted = roc_auc_score(y_test, predicted_probabilities, average='weighted')\n",
-    "    run.log("AUC_weighted", np.float(auc_weighted))\n",
+    "    run.log('AUC_weighted', np.float(auc_weighted))\n",
 
     "    # Save the model\n",
     "    os.makedirs('outputs', exist_ok=True)\n",

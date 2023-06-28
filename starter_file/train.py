@@ -92,7 +92,7 @@
     "    print(random_search.best_params_)\n",
     "    \n",
     "    ##################################################\n",
-    "    model = RandomForestClassifier(C=args.C, max_iter=args.max_iter).fit(x_train, y_train)\n",
+    "    model = RandomForestClassifier().fit(x_train, y_train)\n",
     "\n",
     "    accuracy = model.score(x_test, y_test)\n",
     "    run.log(\"accuracy\", np.float(accuracy))\n",
@@ -100,7 +100,7 @@
     "    ### MY CODE start w/o TODO instraction #################################################################\n",
     "    # Calculate and log the AUC_weighted metric\n",
     "    predicted_probabilities = model.predict_proba(x_test)\n",
-    "    auc_weighted = roc_auc_score(y_test, predicted_probabilities, average='weighted')\n",
+    "    auc_weighted = roc_auc_score(y_test, predicted_probabilities, multi_class='ovr', average='weighted')\n",
     "    run.log('AUC_weighted', np.float(auc_weighted))\n",
 
     "    import joblib\n",

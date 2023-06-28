@@ -44,7 +44,7 @@
     "    x = ds.to_pandas_dataframe()\n",
     "    columns = ['buying', 'maint', 'doors', 'persons', 'lug_boot', 'safety', 'class']\n",
     "    x.columns = columns\n",
-    "    y = x[\"class\"]\n",
+    "    y = x(\"class\")\n",
     "    x=x.drop['class', axis=1]\n",
     "    \n",
     "    x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.2, stratify=y, random_state=0)\n",

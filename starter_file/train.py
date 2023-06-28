@@ -69,7 +69,7 @@
     "    random_search = RandomizedSearchCV(rf_model, param_distributions=param_dist, n_iter=10, cv=5)\n",
     "    \n",
     "    # データを学習させる\n",
-    "    random_search.fit(X_train, y_train)\n",
+    "    random_search.fit(x_train, y_train)\n",
     "    \n",
     "    # 最適なモデルのハイパーパラメータを表示する\n",
     "    print(random_search.best_params_)\n",

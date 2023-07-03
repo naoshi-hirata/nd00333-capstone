@@ -61,7 +61,7 @@
     "    x['safety'] = x['safety'].map(safety_dict)\n",
     "    x['class'] = x['class'].map(class_dict)\n",
     "    \n",
-    "    y = x(\"class\")\n",
+    "    y = x['class']\n",
     "    x=x.drop['class', axis=1]\n",
     "    \n",
     "    x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.2, stratify=y, random_state=0)\n",

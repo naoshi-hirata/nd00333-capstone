@@ -1,145 +1,71 @@
-{
- "cells": [
-  {
-   "cell_type": "code",
-   #"execution_count": null,
-   "id": "b9b5abec",
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "from sklearn.ensemble import RandomForestClassifier\n",
-    "import argparse\n",
-    "import os\n",
-    "import numpy as np\n",
-    "from sklearn.metrics import mean_squared_error\n",
-    "from sklearn.metrics import accuracy_score\n",
-    "import joblib\n",
-    "from sklearn.model_selection import train_test_split\n",
-    "from sklearn.preprocessing import OneHotEncoder\n",
-    "from sklearn.metrics import roc_auc_score\n",
-    "import pandas as pd\n",
-    "from azureml.core.run import Run\n",
-    "from azureml.data.dataset_factory import TabularDatasetFactory\n",
-    "\n",
-    "def main():\n",
-    "    # Add arguments to script\n",
-    "    parser = argparse.ArgumentParser()\n",
-    "    \n",
-    "    parser.add_argument('--C', type=float, default=1.0, help=\"Inverse of regularization strength. Smaller values cause stronger regularization\")\n",
-    "    parser.add_argument('--max_iter', type=int, default=100, help=\"Maximum number of iterations to converge\")\n",
-    "    \n",
-    "    args = parser.parse_args()\n",
-    "    \n",
-    "    run = Run.get_context()\n",
-    "    \n",
-    "    run.log(\"Regularization Strength:\", np.float(args.C))\n",
-    "    run.log(\"Max iterations:\", np.int(args.max_iter))\n",
-    "    \n",
-    "    # Create TabularDataset using TabularDatasetFactory\n",
-    "    \n",
-    "    from azureml.core.dataset import Dataset\n",
-    "    ds = Dataset.Tabular.from_delimited_files(path='https://archive.ics.uci.edu/ml/machine-learning-databases/car/car.data')\n",
-    "    \n",
-    "    # Split the data into train and test sets\n",
-    "    x = ds.to_pandas_dataframe()\n",
-    "    columns = ['buying', 'maint', 'doors', 'persons', 'lug_boot', 'safety', 'class']\n",
-    "    x.columns = columns\n",
-    "    \n",
-    "    buying_dict = {'vhigh': 5, 'high': 4, 'med': 3, 'low': 2}\n",
-    "    maint_dict = {'vhigh': 5, 'high': 4, 'med': 3, 'low': 2}\n",
-    "    doors_dict = {'2': 2, '3': 3, '4': 4, '5more': 5}\n",
-    "    persons_dict = {'2': 2, '4': 4, 'more': 5}\n",
-    "    lug_boot_dict = {'small': 1, 'med': 3, 'big': 5}\n",
-    "    safety_dict = {'low': 1, 'med': 3, 'high': 5}\n",
-    "    class_dict = {'unacc':2, 'acc':3, 'good':4, 'vgood':5}\n",
-    "    # カテゴリカル変数を数値に変換\n",
-    "    x['buying'] = x['buying'].map(buying_dict)\n",
-    "    x['maint'] = x['maint'].map(maint_dict)\n",
-    "    x['doors'] = x['doors'].map(doors_dict)\n",
-    "    x['persons'] = x['persons'].map(persons_dict)\n",
-    "    x['lug_boot'] = x['lug_boot'].map(lug_boot_dict)\n",
-    "    x['safety'] = x['safety'].map(safety_dict)\n",
-    "    x['class'] = x['class'].map(class_dict)\n",
-    "    \n",
-    "    y = x['class']\n",
-    "    x=x.drop['class', axis=1]\n",
-    "    \n",
-    "    x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.2, stratify=y, random_state=0)\n",
-    "    \n",
-    "    ##################################################\n",
-    "    from sklearn.model_selection import RandomizedSearchCV\n",
-    "    from scipy.stats import randint\n",
-    "    \n",
-    "    # パラメータの範囲を定義する\n",
-    "    param_dist = {\n",
-    "        'n_estimators': randint(100, 1000),  # the model's complexity and expressive power\n",
-    "        'max_depth': [None, 5, 10, 20],  # the model's complexity to prevent overfitting\n",
-    "        'min_samples_split': [2, 5, 10],  # the minimum number of samples required for a split node. affect to the model's generalization performance.\n",
-    "        'min_samples_leaf': [1, 2, 4],  # the minimum number of samples required for a leaf node.\n",
-    "        'max_features': ['sqrt', 'log2']  # the impact on the estimation of feature importance\n",
-    "        }\n",
-    "    \n",
-    "    # RandomForestClassifierモデルを作成する\n",
-    "    rf_model = RandomForestClassifier()\n",
-    "    \n",
-    "    # ランダムサーチを実行する\n",
-    "    random_search = RandomizedSearchCV(rf_model, param_distributions=param_dist, n_iter=10, cv=5)\n",
-    "    \n",
-    "    # データを学習させる\n",
-    "    random_search.fit(x_train, y_train)\n",
-    "    \n",
-    "    # 最適なモデルのハイパーパラメータを表示する\n",
-    "    print(random_search.best_params_)\n",
-    "    \n",
-    "    ##################################################\n",
-    "    #model = RandomForestClassifier().fit(x_train, y_train)\n",
-    "    \n",
-    "    #accuracy = model.score(x_test, y_test)\n",
-    "    accuracy = random_search.score(x_test, y_test)\n",
-    "    run.log(\"accuracy\", np.float(accuracy))\n",
-    "    \n",
-    "    ### MY CODE start w/o TODO instraction #################################################################\n",
-    "    # Calculate and log the AUC_weighted metric\n",
-    "    #predicted_probabilities = model.predict_proba(x_test)\n",
-    "    predicted_probabilities = random_search.predict_proba(x_test)\n",
-    "    auc_weighted = roc_auc_score(y_test, predicted_probabilities, multi_class='ovr', average='weighted')\n",
-    "    run.log('auc_weighted', np.float(auc_weighted))\n",
-    "    \n",
-    "    import mlflow\n",
-    "    mlflow.autolog()\n",
-    "    mlflow.log_metric('auc_weighted', 1)\n",
-    "    mlflow.log_metric('accuracy',1)\n",
-    "    \n",
-    "    import joblib\n",
-    "    # Save the model\n",
-    "    os.makedirs('outputs', exist_ok=True)\n",
-    "    joblib.dump(model, 'outputs/hyperdrive_model.joblib')\n",
-    "    ### MY CODE end ########################################################################################\n",
-    "\n",
-    "if __name__ == '__main__':\n",
-    "    main()"
-   ]
-  }
- ],
- "metadata": {
-  "kernelspec": {
-   "display_name": "Python 3 (ipykernel)",
-   "language": "python",
-   "name": "python3"
-  },
-  "language_info": {
-   "codemirror_mode": {
-    "name": "ipython",
-    "version": 3
-   },
-   "file_extension": ".py",
-   "mimetype": "text/x-python",
-   "name": "python",
-   "nbconvert_exporter": "python",
-   "pygments_lexer": "ipython3",
-   "version": "3.9.13"
-  }
- },
- "nbformat": 4,
- "nbformat_minor": 5
-}
+from sklearn.ensemble import RandomForestClassifier
+import argparse
+import os
+import numpy as np
+import joblib
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import roc_auc_score
+import pandas as pd
+from azureml.core import Run, Dataset
+from sklearn.metrics import accuracy_score
+from sklearn.metrics import roc_auc_score
+
+# Add arguments to script
+parser = argparse.ArgumentParser()
+parser.add_argument('--n_estimators', type=int, default=100, help='Number of estimators for RandomForest')
+parser.add_argument('--min_samples_split', type=int, default=10, help='Min samples split for RandomForest')
+parser.add_argument('--min_samples_leaf', type=int, default=5, help='Min samples leaf for RandomForest')
+args = parser.parse_args()
+
+run = Run.get_context()
+run.log('Number of estimators:', np.int(args.n_estimators))
+run.log('Min samples split:', np.int(args.min_samples_split))
+run.log('Min samples leaf:', np.int(args.min_samples_leaf))
+
+
+workspace = run.experiment.workspace
+dataset = Dataset.get_by_name(workspace, name='car evaluation data set') 
+
+x = dataset.to_pandas_dataframe()
+
+buying_dict = {'vhigh': 5, 'high': 4, 'med': 3, 'low': 2}
+maint_dict = {'vhigh': 5, 'high': 4, 'med': 3, 'low': 2}
+doors_dict = {'2': 2, '3': 3, '4': 4, '5more': 5}
+persons_dict = {'2': 2, '4': 4, 'more': 5}
+lug_boot_dict = {'small': 1, 'med': 3, 'big': 5}
+safety_dict = {'low': 1, 'med': 3, 'high': 5}
+class_dict = {'unacc':2, 'acc':3, 'good':4, 'vgood':5}
+# カテゴリカル変数を数値に変換
+x['buying'] = x['buying'].map(buying_dict)
+x['maint'] = x['maint'].map(maint_dict)
+x['doors'] = x['doors'].map(doors_dict)
+x['persons'] = x['persons'].map(persons_dict)
+x['lug_boot'] = x['lug_boot'].map(lug_boot_dict)
+x['safety'] = x['safety'].map(safety_dict)
+x['class'] = x['class'].map(class_dict)
+
+y = x['class']
+x = x.drop('class', axis=1)
+
+x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.2, stratify=y, random_state=0)
+
+model = RandomForestClassifier(n_estimators=args.n_estimators,
+                               min_samples_split=args.min_samples_split,
+                               min_samples_leaf=args.min_samples_leaf,
+                               random_state=42)
+
+model.fit(x_train, y_train)
+y_pred = model.predict(x_test)
+
+accuracy = accuracy_score(y_test, y_pred)
+run.log("accuracy", np.float(accuracy))
+
+auc_weighted = roc_auc_score(y_test, y_pred, multi_class='ovr', average='weighted')
+run.log('auc_weighted', np.float(auc_weighted))
+
+
+# Save the model
+os.makedirs('outputs', exist_ok=True)
+joblib.dump(model, 'outputs/hyperdrive_model.pkl')
+
+run.complete()

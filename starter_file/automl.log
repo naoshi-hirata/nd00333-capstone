@@ -1,0 +1,10 @@
+2023-08-02 02:09:56.736 - INFO - 12462 - azureml.train.automl.run._log_activity:55 - ActivityStarted: GetOutput
+2023-08-02 02:09:56.770 - INFO - 12462 - azureml.train.automl.run._log_activity:55 - ActivityStarted: GetOutput
+2023-08-02 02:09:56.791 - INFO - 12462 - azureml.train.automl.run._log_activity:55 - ActivityStarted: GetChildren
+2023-08-02 02:11:47.055 - INFO - 12462 - azureml.train.automl.run._log_activity:89 - ActivityCompleted: Activity=GetChildren, HowEnded=Success, Duration=110263.46[ms]
+2023-08-02 02:11:47.157 - INFO - 12462 - azureml.train.automl.run._log_activity:89 - ActivityCompleted: Activity=GetOutput, HowEnded=Success, Duration=110387.38[ms]
+2023-08-02 02:11:48.523 - INFO - 12462 - azureml.train.automl.run._log_activity:89 - ActivityCompleted: Activity=GetOutput, HowEnded=Success, Duration=111786.26[ms]
+2023-08-02 02:25:18.804 - INFO - 12462 - azureml.train.automl.run._log_activity:55 - ActivityStarted: RegisterModel
+2023-08-02 02:25:18.830 - INFO - 12462 - azureml.train.automl.run._log_activity:55 - ActivityStarted: GetChildren
+2023-08-02 02:25:18.994 - INFO - 12462 - azureml.train.automl.run._log_activity:89 - ActivityCompleted: Activity=GetChildren, HowEnded=Success, Duration=163.68[ms]
+2023-08-02 02:25:20.084 - INFO - 12462 - azureml.train.automl.run._log_activity:89 - ActivityCompleted: Activity=RegisterModel, HowEnded=Success, Duration=1280.75[ms]

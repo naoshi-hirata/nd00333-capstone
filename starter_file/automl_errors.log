@@ -1,3 +1,0 @@
-2023-07-05 05:07:18.460 - INFO - 8352 - azureml.train.automl._local_managed_utils.is_docker_installed:354 - Docker is installed with Docker version 20.10.23+azure-2, build 715524332ff91d0f9ec5ab2ec95f051456ed1dba
-.
-2023-07-05 05:07:18.463 - INFO - 8352 - azureml.train.automl.automlconfig._start_execution:230 - Submitting remote.

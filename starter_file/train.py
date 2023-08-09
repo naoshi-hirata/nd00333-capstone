@@ -55,12 +55,21 @@ model = RandomForestClassifier(n_estimators=args.n_estimators,
                                random_state=42)
 
 model.fit(x_train, y_train)
-y_pred = model.predict(x_test)
 
-accuracy = accuracy_score(y_test, y_pred)
+# Calculate predicted probabilities instead of predicted labels
+y_prob = model.predict_proba(x_test)
+
+# Print shapes for debugging
+print("Shape of y_test:", y_test.shape)
+print("Shape of y_prob:", y_prob.shape)
+print("Unique values in y_test:", np.unique(y_test))
+print("Unique values in y_prob:", np.unique(y_prob))
+
+accuracy = accuracy_score(y_test, y_prob)
 run.log("accuracy", np.float(accuracy))
 
-auc_weighted = roc_auc_score(y_test, y_pred, multi_class='ovr', average='weighted')
+# Calculate ROC AUC score
+auc_weighted = roc_auc_score(y_test, y_prob, multi_class='ovr', average='weighted')
 run.log('auc_weighted', np.float(auc_weighted))
 
 

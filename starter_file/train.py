@@ -79,7 +79,7 @@ run.log('auc_weighted', np.float(auc_weighted))
 
 
 # Save the model
-os.makedirs('outputs', exist_ok=True)
-joblib.dump(model, 'outputs/hyperdrive_model.pkl')
+os.makedirs('./outputs', exist_ok=True)
+joblib.dump(model, './outputs/hyperdrive_model.pkl')
 
 run.complete()

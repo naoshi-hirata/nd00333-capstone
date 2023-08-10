@@ -16,6 +16,7 @@
 ### Overview
 *TODO*: Explain about the data you are using and where you got it from:
 
+
  The dataset comes from https://archive.ics.uci.edu/ml/machine-learning-databases/car/car.data.
  This Car Evaluation Database was derived from a simple hierarchical decision model. 
  The model evaluates cars(class) according to the six input attributes: buying, maint, doors, persons, lug_boot, safety.
@@ -36,6 +37,7 @@
     acc        384     (22.222 %) 
     good        69     ( 3.993 %) 
     v-good      65     ( 3.762 %) 
+
 
 ### Task
 *TODO*: Explain the task you are going to be solving with this dataset and the features you will be using for it:
@@ -65,8 +67,9 @@ true label Vgood       63      1       1      0
            good         0     60       9      0
            acc          1      2     379      2
            unacc        0      0      15   1194
-Total 64 cases are predicted as "vgood", true label "vgood";63, "acc";1
+
 PARAMETERS; The top 4 features of importance are "safety", "persons capasity", "buying price" and "maint. price"
+
 IMPROVE; The result is very good. To improve more, I would like to add more data to decrease variance of evaluation.
 
 *TODO* Remeber to provide screenshots of the `RunDetails` widget as well as a screenshot of the best model trained with it's parameters.

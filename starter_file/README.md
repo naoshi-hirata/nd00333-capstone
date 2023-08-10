@@ -57,11 +57,17 @@
 ### Results
 *TODO*: What are the results you got with your automated ML model? What were the parameters of the model? How could you have improved it?:
 
-The best AUC weighted is 0.9988 by .
-AutoML実験の詳細な結果の表示。
-モデルの一覧から、特定のモデルの詳細を選択。
-選択したモデルの詳細ページで、モデルのアルゴリズム、ハイパーパラメータ、特徴量の変換、トレーニング時間、使用されたコンピューティングリソースなどの情報が含まれる。
-具体的な手順はAzure Machine LearningのUIやコンソールを使用
+RESULT; The best AUC weighted is 0.9988 by VotingEnsemble. 
+Confusion Matrix;
+                     predicted label
+                     Vgood   good    acc   unacc
+true label Vgood       63      1       1      0
+           good         0     60       9      0
+           acc          1      2     379      2
+           unacc        0      0      15   1194
+Total 64 cases are predicted as "vgood", true label "vgood";63, "acc";1
+PARAMETERS; The top 4 features of importance are "safety", "persons capasity", "buying price" and "maint. price"
+IMPROVE; The result is very good. To improve more, I would like to add more data to decrease variance of evaluation.
 
 *TODO* Remeber to provide screenshots of the `RunDetails` widget as well as a screenshot of the best model trained with it's parameters.
 

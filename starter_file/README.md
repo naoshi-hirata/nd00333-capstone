@@ -57,7 +57,7 @@
 ### Results
 *TODO*: What are the results you got with your automated ML model? What were the parameters of the model? How could you have improved it?:
 
-The best metric is 0.9988 by MaxAbsScaler LightGBM.
+The best AUC weighted is 0.9988 by .
 AutoML実験の詳細な結果の表示。
 モデルの一覧から、特定のモデルの詳細を選択。
 選択したモデルの詳細ページで、モデルのアルゴリズム、ハイパーパラメータ、特徴量の変換、トレーニング時間、使用されたコンピューティングリソースなどの情報が含まれる。

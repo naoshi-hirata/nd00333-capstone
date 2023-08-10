@@ -77,14 +77,43 @@ IMPROVE; The result is very good. To improve more, I would like to add more data
 ## Hyperparameter Tuning
 *TODO*: What kind of model did you choose for this experiment and why? Give an overview of the types of parameters and their ranges used for the hyperparameter search
 
+model:RamdomForests
+Random Forests is an ensemble learning method that combines multiple decision trees. It can exhibit strong classification performance on datasets that include categorical data. By combining multiple decision trees, it helps mitigate overfitting and improves generalization performance.
+
+hyperparameters:
+n_estimators: the model's complexity and expressive power. choice(100, 500, 1000)
+min_samples_split: the minimum number of samples required for a split node. affect to the model's generalization performance.choice(2, 10, 20)
+min_samples_leaf: the minimum number of samples required for a leaf node.choice(1, 5, 10)
+
 
 ### Results
 *TODO*: What are the results you got with your model? What were the parameters of the model? How could you have improved it?
+
+RESULT: the best auc_weighted is 0.9997879003389194
+
+HYPER PARAMETERS: the best Run Hyperparameters:
+--min_samples_leaf
+1
+--min_samples_split
+2
+--n_estimators
+500
+
+IMPROVING: The metrics is very high. To improve it, add more data again.
 
 *TODO* Remeber to provide screenshots of the `RunDetails` widget as well as a screenshot of the best model trained with it's parameters.
 
 ## Model Deployment
 *TODO*: Give an overview of the deployed model and instructions on how to query the endpoint with a sample input.
+
+OVERVIEW; The deployed model predicts car acceptability. The model is deployed as a web service using Azure Container Instances, allowing users to make predictions based on the trained model.
+
+INSTRUCTION;
+- Get the Scoring URI; this is the endpoint you will be sending requests to.
+- Create a sample Input Data; This should match the format of the train data.
+- Convert Input to JSON; Convert the input data dictionary into a JSON string using the json.dumps() function.
+- Set Headers and Make Request; Set the headers for the request, which should include the content type as 'application/json'. Then, use the requests.post() method to send a POST request to the scoring URI with the JSON input data.
+- Get Predictions; The response object contains the predictions returned by the deployed model. You can extract the predictions using the .json() method.
 
 ## Screen Recording
 *TODO* Provide a link to a screen recording of the project in action. Remember that the screencast should demonstrate:

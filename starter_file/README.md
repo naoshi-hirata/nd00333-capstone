@@ -22,13 +22,13 @@
  The model evaluates cars(class) according to the six input attributes: buying, maint, doors, persons, lug_boot, safety.
   -Number of Instances: 1728 (instances completely cover the attribute space)
   -Number of Attributes: 6
-  -Attribute Values:/m
-    buying       v-high, high, med, low/n
-    maint        v-high, high, med, low/n
-    doors        2, 3, 4, 5-more/n
-    persons      2, 4, more/n
-    lug_boot     small, med, big/n
-    safety       low, med, high/n
+  -Attribute Values:
+    buying       v-high, high, med, low
+    maint        v-high, high, med, low
+    doors        2, 3, 4, 5-more
+    persons      2, 4, more
+    lug_boot     small, med, big
+    safety       low, med, high
  -Missing Attribute Values: none
  -Class Distribution (number of instances per class)
     class      N          N[%]

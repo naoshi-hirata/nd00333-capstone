@@ -123,3 +123,6 @@ INSTRUCTION;
 
 ## Standout Suggestions
 *TODO (Optional):* This is where you can provide information about any standout suggestions that you have attempted.
+
+Convert a model to ONNX format;
+Machine learning models have different file formats for each algorithm. In AzureML's AutoML, since it's not possible to identify the specific algorithm in advance, ONNX format is utilized to save the created model.

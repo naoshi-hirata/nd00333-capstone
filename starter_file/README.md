@@ -70,7 +70,10 @@ true label Vgood       63      1       1      0
 
 PARAMETERS; The top 4 features of importance are "safety", "persons capasity", "buying price" and "maint. price"
 
-IMPROVE; The result is very good. To improve more, I would like to add more data to decrease variance of evaluation.
+IMPROVE; The metrics and confusion matrics are very good though "Class balancing detection" alert is shown. 
+To improve more, I would like to reengineer features or create new feature. This database has only three categories, cost, size, safety. But owner may consider the performance, entertaiment, styling, and so on. 
+In case I stay with this database, I would like to try other metrics rather than auc-weighted,and to change validation setting to improve model stability and generalization performance.
+
 
 *TODO* Remeber to provide screenshots of the `RunDetails` widget as well as a screenshot of the best model trained with it's parameters.
 

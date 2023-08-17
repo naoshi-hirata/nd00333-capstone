@@ -121,7 +121,7 @@ INSTRUCTION;
 ## Screen Recording
 *TODO* Provide a link to a screen recording of the project in action. Remember that the screencast should demonstrate:
 
-https://youtu.be/bMNHnhi48K0
+https://youtu.be/KpAunyu6Q6o
 
 
 ## Standout Suggestions
